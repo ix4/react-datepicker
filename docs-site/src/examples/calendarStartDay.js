@@ -4,7 +4,7 @@
     <DatePicker
       selected={startDate}
       onChange={(date) => setStartDate(date)}
-      inline
+      calendarStartDay={3}
     />
   );
 };

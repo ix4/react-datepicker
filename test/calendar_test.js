@@ -426,10 +426,8 @@ describe("Calendar", function () {
         maxDate: utils.newDate(),
       });
 
-      const {
-        prevMonthButtonDisabled,
-        nextMonthButtonDisabled,
-      } = renderCustomHeader.getCall(0).args[0];
+      const { prevMonthButtonDisabled, nextMonthButtonDisabled } =
+        renderCustomHeader.getCall(0).args[0];
 
       assert(
         prevMonthButtonDisabled === false,
@@ -450,10 +448,8 @@ describe("Calendar", function () {
         maxDate: utils.addMonths(utils.newDate(), 1),
       });
 
-      const {
-        prevMonthButtonDisabled,
-        nextMonthButtonDisabled,
-      } = renderCustomHeader.getCall(0).args[0];
+      const { prevMonthButtonDisabled, nextMonthButtonDisabled } =
+        renderCustomHeader.getCall(0).args[0];
 
       assert(
         prevMonthButtonDisabled === true,
@@ -509,6 +505,34 @@ describe("Calendar", function () {
       expect(
         fourMonthsCalendar.find(".react-datepicker__header--custom")
       ).to.have.length(4);
+    });
+
+    it("should set monthDate prop correctly when rendering custom headers", () => {
+      const renderMonthDateInCustomHeader = ({ monthDate }) => (
+        <div className="customheader-monthdate">{`${monthDate.getFullYear()}-${monthDate.getMonth()}-${monthDate.getDate()}`}</div>
+      );
+      const twoMonthsCalendar = getCalendar({
+        renderCustomHeader: renderMonthDateInCustomHeader,
+        monthsShown: 2,
+      });
+
+      const firstDate = new Date();
+      const secondDate = utils.addMonths(new Date(), 1);
+      const firstDateInCustomHeader = twoMonthsCalendar
+        .find(".customheader-monthdate")
+        .at(0)
+        .text();
+      const secondDateInCustomHeader = twoMonthsCalendar
+        .find(".customheader-monthdate")
+        .at(1)
+        .text();
+
+      expect(firstDateInCustomHeader).to.equal(
+        `${firstDate.getFullYear()}-${firstDate.getMonth()}-${firstDate.getDate()}`
+      );
+      expect(secondDateInCustomHeader).to.equal(
+        `${secondDate.getFullYear()}-${secondDate.getMonth()}-${secondDate.getDate()}`
+      );
     });
 
     it("should render custom header with show time select", function () {
@@ -1511,6 +1535,22 @@ describe("Calendar", function () {
         ".react-datepicker__header--has-time-select"
       );
       expect(header).to.have.length(1);
+    });
+  });
+
+  describe("calendarStartDay", () => {
+    it("should have default sunday as start day if No prop passed", () => {
+      const calendar = getCalendar();
+      const calendarDays = calendar.find(".react-datepicker__day-name");
+      expect(calendarDays.at(0).text()).to.equal("Su");
+      expect(calendarDays.at(6).text()).to.equal("Sa");
+    });
+
+    it("should have default wednesday as start day if No prop passed", () => {
+      const calendar = getCalendar({ calendarStartDay: 3 });
+      const calendarDays = calendar.find(".react-datepicker__day-name");
+      expect(calendarDays.at(0).text()).to.equal("We");
+      expect(calendarDays.at(6).text()).to.equal("Tu");
     });
   });
 });
